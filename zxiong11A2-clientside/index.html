@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundraiser Wanted</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf7db;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #ffeb3b;
+            color: black;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+        }
+        .introduction {
+            margin-top: 80px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #ffeb3b;
+            color: black;
+        }
+        button {
+            background-color: #66bb6a;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #57a65c;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Fundraiser Wanted</h1>
+    <nav>
+        <a href="index.html">Homepage</a>
+        <a href="search.html">Find Fundraisers</a>
+    </nav>
+</header>
+
+<div class="introduction">
+    <h2>Welcome to Our Fundraiser Platform</h2>
+    <p>Our platform connects generous individuals with meaningful causes. We aim to empower communities and support initiatives that make a difference in people’s lives.</p>
+    <h3>How It Works</h3>
+    <p>Browse through various fundraisers, learn about their goals, and contribute to causes that resonate with you. Every donation, no matter how small, helps us make a positive impact.</p>
+    <h3>Join Us</h3>
+    <p>Become part of a growing community committed to making a change. Whether you want to organize a fundraiser or support an existing one, we welcome your participation!</p>
+</div>
+
+<table id="fundraiserTable">
+    <thead>
+    <tr>
+        <th>Caption</th>
+        <th>Organizer</th>
+        <th>Status</th>
+        <th>Category</th>
+        <th>Goal Amount (AUD)</th>
+        <th>Raised Amount (AUD)</th>
+        <th>Location</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="fundraiserGrid"></tbody>
+</table>
+
+<script>
+    fetch('http://localhost:3100/fundraisers')
+        .then(response => response.json())
+        .then(data => {
+            const rows = data.map(fundraiser => {
+                const statusText = fundraiser.ACTIVE ? 'Active' : 'Inactive';
+                const categoryTitle = determineCategory(fundraiser.CATEGORY_ID);
+                return `
+                    <tr>
+                        <td>${fundraiser.CAPTION}</td>
+                        <td>${fundraiser.ORGANIZER}</td>
+                        <td>${statusText}</td>
+                        <td>${categoryTitle}</td>
+                        <td>${fundraiser.TARGET_FUNDING} AUD</td>
+                        <td>${fundraiser.CURRENT_FUNDING} AUD</td>
+                        <td>${fundraiser.CITY}</td>
+                        <td><button onclick="alertFeature()">Contribute</button></td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('fundraiserGrid').innerHTML = rows;
+        })
+        .catch(error => console.error('Error fetching fundraisers:', error));
+
+    function alertFeature() {
+        alert('This feature is currently under development.');
+    }
+
+    function determineCategory(id) {
+        switch (id) {
+            case 1: return 'Health';
+            case 2: return 'Education';
+            case 3: return 'Animal Welfare';
+            case 4: return 'Community Development';
+            case 5: return 'Disaster Relief';
+            default: return 'Unknown Category';
+        }
+    }
+</script>
+</body>
+</html>
