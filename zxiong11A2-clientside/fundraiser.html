@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundraiser Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffeb3b; /* Yellow background for the entire page */
+            margin: 0;
+            padding: 20px;
+            text-align: center; /* Center-align all text */
+        }
+        header {
+            position: fixed; /* Keep the header fixed at the top */
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #ffeb3b; /* Yellow background for the header */
+            color: black;
+            padding: 10px 0;
+            z-index: 1000; /* Ensure the header remains above other elements */
+        }
+        nav {
+            font-size: 20px; /* Adjust font size for navigation */
+            display: flex; /* Use flexbox for navigation layout */
+            justify-content: center; /* Center the navigation links */
+        }
+        nav a {
+            color: black; /* Color for navigation links */
+            margin: 0 15px; /* Space between links */
+            text-decoration: none; /* Remove underline from links */
+        }
+        nav a:hover {
+            text-decoration: underline; /* Underline links on hover */
+        }
+        section {
+            margin-top: 80px; /* Space below the fixed header */
+        }
+        .fundraiser-card {
+            margin: 20px auto; /* Center the fundraiser card */
+            display: inline-block; /* Allow the card to take only the necessary space */
+            padding: 20px; /* Padding inside the card */
+        }
+        button {
+            background-color: #66bb6a; /* Green background for button */
+            color: white; /* White text for button */
+            border: none; /* No border for button */
+            padding: 10px 15px; /* Padding inside the button */
+            border-radius: 5px; /* Rounded corners for button */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+        button:hover {
+            background-color: #57a65c; /* Darker green on button hover */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="../../../../Downloads/zxiong11A2-clientside/index.html">Homepage</a>
+        <a href="../../../../Downloads/zxiong11A2-clientside/search.html">Find Fundraisers</a>
+    </nav>
+</header>
+
+<section id="fundraiserGrid"></section>
+
+<script>
+    // Get the fundraiser ID from the URL parameters
+    const fundraiserId = new URLSearchParams(window.location.search).get('id');
+
+    // Fetch fundraiser details from the server
+    fetch(`http://localhost:3100/fundraiser/${fundraiserId}`)
+        .then(response => response.json())
+        .then(data => {
+            const statusText = data.ACTIVE ? 'Active' : 'Inactive'; // Determine status text
+            const categoryTitle = determineCategory(data.CATEGORY_ID); // Get the category title
+
+            // Insert fundraiser details into the page
+            document.getElementById('fundraiserGrid').innerHTML = `
+                <div class="fundraiser-card">
+                    <h2>${data.CAPTION}</h2>
+                    <p><strong>Organizer:</strong> ${data.ORGANIZER}</p>
+                    <p><strong>Status:</strong> ${statusText}</p>
+                    <p><strong>Category:</strong> ${categoryTitle}</p>
+                    <p><strong>Goal Amount:</strong> ${data.TARGET_FUNDING} AUD</p>
+                    <p><strong>Raised Amount:</strong> ${data.CURRENT_FUNDING} AUD</p>
+                    <p><strong>Location:</strong> ${data.CITY}</p>
+                    <button onclick="alertFeature()">Contribute</button>
+                </div>
+            `;
+        })
+        .catch(error => console.error('Error fetching fundraiser details:', error)); // Log any errors
+
+    // Function to show an alert for the "Contribute" button
+    function alertFeature() {
+        alert('This feature is currently under development.');
+    }
+
+    // Function to determine the category name based on the ID
+    function determineCategory(id) {
+        switch (id) {
+            case 1: return 'Health';
+            case 2: return 'Education';
+            case 3: return 'Animal Welfare';
+            case 4: return 'Community Development';
+            case 5: return 'Disaster Relief';
+            default: return 'Unknown Category';
+        }
+    }
+</script>
+</body>
+</html>
